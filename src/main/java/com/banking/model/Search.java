@@ -1,4 +1,4 @@
-package com.banking;
+package com.banking.model;
 
 
 import java.time.*;
