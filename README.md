@@ -6,15 +6,17 @@ This project is a kick off for our Skills Enhancement Project, an opportunity to
 We have been broken up into teams and will select and enhance a team member's Capstone 1 project via: improving functinoality, fixing issues, adding new features, and more. 
 
 ### Team Members
-- Naod 
+- Naod Asmelash
 
-- 
+- Ezra Teshale
 
-- 
+- Uyen Nguyen
 
-- 
+- Richard Tougeekay
 
-- 
+- Kevin Nguyen
+
+- Chris Torres
 
 ---------
 
