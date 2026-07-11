@@ -5,6 +5,9 @@ import java.time.*;
 
 public class Search implements Comparable<Search> {
 
+
+
+
     private LocalDate searchDate;
     private LocalTime searchTime;
 
