@@ -5,13 +5,13 @@ package com.banking.exception;
  * HTTP Status: 500 INTERNAL_SERVER_ERROR
  */
 
-public class DataAccessException extends ApplicationException{
+public class DatabaseOperationException extends ApplicationException{
 
-    public DataAccessException(String message) {
+    public DatabaseOperationException(String message) {
         super(message);
     }
 
-    public DataAccessException(String message, Throwable cause) {
+    public DatabaseOperationException(String message, Throwable cause) {
         super(message, cause);
     }
 

@@ -1,6 +1,6 @@
 package com.banking.service;
 
-import com.banking.exception.DataAccessException;
+import com.banking.exception.DatabaseOperationException;
 import com.banking.exception.DuplicateResourceException;
 import com.banking.exception.InvalidInputException;
 import com.banking.exception.ResourceNotFoundException;
@@ -66,7 +66,7 @@ public Transaction create(Transaction transaction) {
         return transactionRepository.save(transaction);
 
     } catch (Exception e) {
-        throw new DataAccessException("Failed to save transaction", e);
+        throw new DatabaseOperationException("Failed to save transaction", e);
     }
 }
 
@@ -118,7 +118,7 @@ public Transaction update(Long id, Transaction transaction)
 
     } catch (Exception e) {
 
-        throw new DataAccessException("Failed to update transaction", e);
+        throw new DatabaseOperationException("Failed to update transaction", e);
 
     }
 

@@ -42,8 +42,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
-    @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ErrorResponse> handleDataAccess(DataAccessException ex) {
+    @ExceptionHandler(DatabaseOperationException.class)
+    public ResponseEntity<ErrorResponse> handleDataAccess(DatabaseOperationException ex) {
         ErrorResponse error = new ErrorResponse(
                 "DATABASE_ERROR",
                 "An unexpected error occurred while accessing the database",
