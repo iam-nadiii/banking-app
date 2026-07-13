@@ -13,5 +13,10 @@ public interface SearchRepository extends JpaRepository<Search, Long>{
 
     Optional<Search> findByVendor(String vendor);
 
+    Search deleteSearch(Long Id);
+
+    Search create(Search search);
+
+    Search update(Long Id, Search search);
 
 }
