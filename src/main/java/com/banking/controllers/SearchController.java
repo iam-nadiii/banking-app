@@ -28,7 +28,7 @@ public class SearchController {
                 return ResponseEntity.ok(searches);
         }
 
-        @GetMapping("{id}")
+        @GetMapping("/{id}")
         public ResponseEntity<Search>findById(@PathVariable Long Id){
 
                 Optional<Search> search = searchService.findById(Id);
@@ -39,7 +39,7 @@ public class SearchController {
                 return ResponseEntity;
         }
 
-        @GetMapping("{vendor}")
+        @GetMapping("/{vendor}")
         public ResponseEntity<Search>findByVendor(@PathVariable String vendor){
                 Optional<Search> search = searchService.findByVendor(vendor);
                 if (search ==null)
@@ -53,13 +53,13 @@ public class SearchController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(created);
         }
 
-        @PutMapping("{Id}")
+        @PutMapping("/{Id}")
         public ResponseEntity<Search>updateSearch(@PathVariable Long Id, @RequestBody Search search){
                 Search updated = searchService.update(Id,search);
                 return ResponseEntity.ok(updated);
         }
 
-        @DeleteMapping("{id}")
+        @DeleteMapping("/{id}")
         public ResponseEntity<Void> deleteSearch(@PathVariable Long Id){
         searchService.deleteSearch(Id);
         return ResponseEntity.noContent().build();

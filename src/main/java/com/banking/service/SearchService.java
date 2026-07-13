@@ -26,10 +26,6 @@ public class SearchService {
         return searchRepository.findByVendor(vendor);
     }
 
-    public void deleteSearch(Long Id) {
-        searchRepository.deleteById(Id);
-    }
-
     public Search create(Search search) {
         return searchRepository.save(search);
     }
@@ -46,5 +42,9 @@ public class SearchService {
         existing.setMinAmount(search.getMinAmount());
         existing.setMaxAmount(search.getMaxAmount());
         return searchRepository.save(existing);
+    }
+
+    public void deleteSearch(Long Id) {
+        searchRepository.deleteById(Id);
     }
 }
