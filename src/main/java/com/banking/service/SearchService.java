@@ -2,10 +2,12 @@ package com.banking.service;
 
 import com.banking.models.Search;
 import com.banking.repository.SearchRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class SearchService {
 
     private SearchRepository searchRepository;
