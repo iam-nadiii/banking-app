@@ -9,14 +9,8 @@ import java.util.Optional;
 @Repository
 public interface SearchRepository extends JpaRepository<Search, Long>{
 
-    Search getById(Long Id);
+    Search getBySearchId(Long Id);
 
     Optional<Search> findByVendor(String vendor);
-
-    Search create(Search search);
-
-    Search update(Long Id, Search search);
-
-    Search deleteSearch(Long Id);
 
 }

@@ -15,53 +15,47 @@ import java.util.Optional;
 @RequestMapping("searches")
 public class SearchController {
 
-        private final SearchService searchService;
-        private ResponseEntity<Search> ResponseEntity;
+    private final SearchService searchService;
+    private ResponseEntity<Search> ResponseEntity;
 
-        public SearchController(SearchService searchService){
-                this.searchService=searchService;
-        }
+    public SearchController(SearchService searchService) {
+        this.searchService = searchService;
+    }
 
-        @GetMapping
-        public ResponseEntity<List<Search>>getAll(){
-                List<Search>searches=searchService.getAllSearches();
-                return ResponseEntity.ok(searches);
-        }
+    @GetMapping
+    public ResponseEntity<List<Search>> getAll() {
+        List<Search> searches = searchService.getAllSearches();
+        return ResponseEntity.ok(searches);
+    }
 
-        @GetMapping("/{id}")
-        public ResponseEntity<Search>findById(@PathVariable Long Id){
+    @GetMapping("/{id}")
+    public ResponseEntity<Search> getBySearchId(@PathVariable Long Id) {
 
-                Optional<Search> search = searchService.findById(Id);
+        Optional<Search> search = searchService.getBySearchId(Id);
 
-                if (search == null)
-                        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (search == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-                return ResponseEntity;
-        }
+        return ResponseEntity;
+    }
 
-        @GetMapping("/{vendor}")
-        public ResponseEntity<Search>findByVendor(@PathVariable String vendor){
-                Optional<Search> search = searchService.findByVendor(vendor);
-                if (search ==null)
-                        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-                return ResponseEntity;
-        }
+    @GetMapping("/{vendor}")
+    public ResponseEntity<Search> findByVendor(@PathVariable String vendor) {
+        Optional<Search> search = searchService.findByVendor(vendor);
+        if (search == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return ResponseEntity;
+    }
 
-        @PostMapping
-        public ResponseEntity<Search>addSearch(@RequestBody Search search){
-                Search created = searchService.create(search);
-                return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        }
+    @PostMapping
+    public ResponseEntity<Search> addSearch(@RequestBody Search search) {
+        Search created = searchService.create(search);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
 
-        @PutMapping("/{Id}")
-        public ResponseEntity<Search>updateSearch(@PathVariable Long Id, @RequestBody Search search){
-                Search updated = searchService.update(Id,search);
-                return ResponseEntity.ok(updated);
-        }
-
-        @DeleteMapping("/{id}")
-        public ResponseEntity<Void> deleteSearch(@PathVariable Long Id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSearch(@PathVariable Long Id) {
         searchService.deleteSearch(Id);
         return ResponseEntity.noContent().build();
-        }
+    }
 }
