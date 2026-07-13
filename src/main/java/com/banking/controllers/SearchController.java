@@ -31,6 +31,13 @@ public class SearchController {
 //    public List<Search> search(@RequestParam(name="idk", required = false) Integer idk,
 //                                @RequestParam(repeat),
 //)
+
+        @PutMapping("{Id}")
+        public ResponseEntity<Search>updateSearch(@PathVariable Long Id, @RequestBody Search search){
+                Search updated = searchService.update(Id,search);
+                return ResponseEntity.ok(updated);
+        }
+
         @GetMapping
         public ResponseEntity<List<Search>>getAll(){
                 List<Search>searches=searchService.getAllSearches();
@@ -46,6 +53,12 @@ public class SearchController {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         return ResponseEntity;
+        }
+
+        @PostMapping
+        public ResponseEntity<Search>addSearch(@RequestBody Search search){
+                Search created = searchService.create(search);
+                return ResponseEntity.status(HttpStatus.CREATED).body(created);
         }
 
         @DeleteMapping("{id}")

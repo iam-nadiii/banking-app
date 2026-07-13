@@ -45,6 +45,14 @@ public class Search implements Comparable<Search> {
 
     }
 
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
+    }
+
     public String getEndDate() {
         return endDate;
     }

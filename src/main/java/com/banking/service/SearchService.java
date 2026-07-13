@@ -26,4 +26,22 @@ public class SearchService {
     public void deleteSearch(Long Id) {
         searchRepository.deleteById(Id);
     }
+
+    public Search create(Search search) {
+        return searchRepository.save(search);
+    }
+
+    public Search update(Long Id, Search search) {
+        Search existing = searchRepository.findById(Id).orElseThrow();
+        existing.setId(search.getId());
+        existing.setEndDate(search.getEndDate());
+        existing.setSearchDate(search.getSearchDate());
+        existing.setSearchTime(search.getSearchTime());
+        existing.setStartDate(search.getStartDate());
+        existing.setDescription(search.getDescription());
+        existing.setVendor(search.getVendor());
+        existing.setMinAmount(search.getMinAmount());
+        existing.setMaxAmount(search.getMaxAmount());
+        return searchRepository.save(existing);
+    }
 }
