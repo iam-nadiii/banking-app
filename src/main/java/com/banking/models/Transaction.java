@@ -1,31 +1,82 @@
 package com.banking.models;
 
 
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 
-public class Transaction implements Comparable<Transaction> {
-    private LocalDate date;
-    private LocalTime time;
+@Entity
+@Table(name = "transactions")
+public class Transaction {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
+
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal amount;
+
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TransactionType type;
+
+    @Column(name = "txn_date", nullable = false)
+    private LocalDate txnDate;
+
+    @Column(name = "txn_time")
+    private LocalTime txnTime;
+
+    @Column(length = 255)
     private String description;
-    private String vendor;
-    private double amount;
 
-    public LocalDate getDate() {
-        return date;
+    public Long getId() {
+        return id;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public Vendor getVendor() {
+        return vendor;
     }
 
-    public void setTime(LocalTime time) {
-        this.time = time;
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
+    }
+
+    public LocalDate getTxnDate() {
+        return txnDate;
+    }
+
+    public void setTxnDate(LocalDate txnDate) {
+        this.txnDate = txnDate;
+    }
+
+    public LocalTime getTxnTime() {
+        return txnTime;
+    }
+
+    public void setTxnTime(LocalTime txnTime) {
+        this.txnTime = txnTime;
     }
 
     public String getDescription() {
@@ -35,48 +86,13 @@ public class Transaction implements Comparable<Transaction> {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public String getVendor() {
-        return vendor;
-    }
-
-    public void setVendor(String vendor) {
-        this.vendor = vendor;
-    }
-
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-
-    @Override
-    public int compareTo(Transaction other) {
-        int dateCompare = other.date.compareTo(this.date);
-
-        if (dateCompare != 0){
-            return dateCompare;
-        }
-
-        return other.time.compareTo(this.time);
-    }
-
-
-
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "date='" + date + '\'' +
-                ", time='" + time + '\'' +
-                ", description='" + description + '\'' +
-                ", vendor='" + vendor + '\'' +
-                ", amount=" + amount +
-                '}';
-    }
-
-
 
 }
 
