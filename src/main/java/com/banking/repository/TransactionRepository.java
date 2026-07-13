@@ -14,6 +14,5 @@ public interface TransactionRepository extends JpaRepository<Transaction,Long> {
     List<Transaction> findByType(TransactionType type);
     List<Transaction> findByTxnDateBetween(LocalDate start, LocalDate end);
     List<Transaction> findByVendor_Id(Long vendorId);
-
     boolean existsByVendorAndAmountAndTxnDateAndTxnTime(Vendor vendor, BigDecimal amount, LocalDate txnDate, LocalTime txnTime);
 }
