@@ -10,11 +10,11 @@ public class SearchService {
 
     private SearchRepository searchRepository;
 
-    public SearchService(SearchRepository searchRepository){
+    public SearchService(SearchRepository searchRepository) {
         this.searchRepository = searchRepository;
     }
 
-    public List<Search> getAllSearches(){
+    public List<Search> getAllSearches() {
         return searchRepository.findAll();
     }
 
@@ -22,6 +22,9 @@ public class SearchService {
         return searchRepository.findById(Id);
     }
 
+    public Optional<Search> findByVendor(String vendor) {
+        return searchRepository.findByVendor(vendor);
+    }
 
     public void deleteSearch(Long Id) {
         searchRepository.deleteById(Id);

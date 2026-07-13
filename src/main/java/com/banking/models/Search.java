@@ -1,10 +1,7 @@
 package com.banking.models;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.*;
 
@@ -14,6 +11,7 @@ public class Search implements Comparable<Search> {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;/*Is ID not required? I see it on the schema. I added in case we do, just include getter+setters*/
 
     @Column(name = "searchDate")
@@ -39,10 +37,7 @@ public class Search implements Comparable<Search> {
 
     @Column(name = "maxAmount")
     private String maxAmount;
-
-//    I had a loaded constructor earlier but saw that it conflicted with the use of an empty one in App, so I just provided an empty one
     public Search(){
-
     }
 
     public Long getId() {

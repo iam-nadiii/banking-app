@@ -2,8 +2,6 @@ package com.banking.controllers;
 
 import com.banking.models.Search;
 import com.banking.service.SearchService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Id;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,20 +22,6 @@ public class SearchController {
                 this.searchService=searchService;
         }
 
-//    @Autowired
-//    private final SearchService searchService;
-
-//    @GetMapping("")
-//    public List<Search> search(@RequestParam(name="idk", required = false) Integer idk,
-//                                @RequestParam(repeat),
-//)
-
-        @PutMapping("{Id}")
-        public ResponseEntity<Search>updateSearch(@PathVariable Long Id, @RequestBody Search search){
-                Search updated = searchService.update(Id,search);
-                return ResponseEntity.ok(updated);
-        }
-
         @GetMapping
         public ResponseEntity<List<Search>>getAll(){
                 List<Search>searches=searchService.getAllSearches();
@@ -45,20 +29,34 @@ public class SearchController {
         }
 
         @GetMapping("{id}")
-        public ResponseEntity<Search>getById(@PathVariable Long Id){
+        public ResponseEntity<Search>findById(@PathVariable Long Id){
 
-        Optional<Search> search = searchService.findById(Id);
+                Optional<Search> search = searchService.findById(Id);
 
-        if (search == null)
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                if (search == null)
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        return ResponseEntity;
+                return ResponseEntity;
+        }
+
+        @GetMapping("{vendor}")
+        public ResponseEntity<Search>findByVendor(@PathVariable String vendor){
+                Optional<Search> search = searchService.findByVendor(vendor);
+                if (search ==null)
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                return ResponseEntity;
         }
 
         @PostMapping
         public ResponseEntity<Search>addSearch(@RequestBody Search search){
                 Search created = searchService.create(search);
                 return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        }
+
+        @PutMapping("{Id}")
+        public ResponseEntity<Search>updateSearch(@PathVariable Long Id, @RequestBody Search search){
+                Search updated = searchService.update(Id,search);
+                return ResponseEntity.ok(updated);
         }
 
         @DeleteMapping("{id}")
