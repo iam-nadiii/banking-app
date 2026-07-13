@@ -17,9 +17,9 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "vendor_id")
-    private Vendor vendor;
+    //@ManyToOne
+    //@JoinColumn(name = "vendor_id")
+    private Long vendorId;
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;
@@ -47,12 +47,12 @@ public class Transaction {
         this.id = id;
     }
 
-    public Vendor getVendor() {
-        return vendor;
+    public Long getVendorId() {
+        return vendorId;
     }
 
-    public void setVendor(Vendor vendor) {
-        this.vendor = vendor;
+    public void setVendorId(Long vendorId) {
+        this.vendorId = vendorId;
     }
 
     public TransactionType getType() {
