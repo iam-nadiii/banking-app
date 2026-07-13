@@ -40,7 +40,10 @@ public class Search implements Comparable<Search> {
     @Column(name = "maxAmount")
     private String maxAmount;
 
+//    I had a loaded constructor earlier but saw that it conflicted with the use of an empty one in App, so I just provided an empty one
+    public Search(){
 
+    }
 
     public String getEndDate() {
         return endDate;
