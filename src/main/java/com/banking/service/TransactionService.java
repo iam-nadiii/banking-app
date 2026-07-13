@@ -141,4 +141,12 @@ public List<Transaction> getByVendorId(Long vendorId) {
     return transactionRepository.findByVendor_Id(vendorId);
 }
 
+public List<Transaction> search(Long vendorId, TransactionType type, LocalDate startDate, LocalDate endDate) {
+    try{
+    return transactionRepository.search(vendorId, type, startDate, endDate);
+    }catch(Exception e){
+        throw new DatabaseOperationException("Failed to search transactions");
+    }
+}
+
 }

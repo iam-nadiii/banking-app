@@ -56,6 +56,17 @@ public ResponseEntity<List<Transaction>> getByType(@PathVariable TransactionType
     return ResponseEntity.ok(transactions);
 }
 
+@GetMapping("/search")
+public ResponseEntity<List<Transaction>> search(
+        @RequestParam(required = false) Long vendorId,
+        @RequestParam(required = false) TransactionType type,
+        @RequestParam(required = false) LocalDate startDate,
+        @RequestParam(required = false) LocalDate endDate) {
+
+    List<Transaction> transactions = transactionService.search(vendorId, type, startDate, endDate);
+    return ResponseEntity.ok(transactions);
+}
+
 @PostMapping
     public ResponseEntity<Transaction>addTransaction(@RequestBody Transaction transaction){
     Transaction created = transactionService.create(transaction);
