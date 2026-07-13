@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("searches")
 public class SearchController {
 
+    private final SearchService searchService;
+
 
 
 }
