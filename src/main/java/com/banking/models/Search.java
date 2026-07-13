@@ -14,16 +14,16 @@ public class Search implements Comparable<Search> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;/*Is ID not required? I see it on the schema. I added in case we do, just include getter+setters*/
 
-    @Column(name = "searchDate")
+    @Column(name = "search_date")
     private LocalDate searchDate;
 
-    @Column(name = "searchTime")
+    @Column(name = "search_time")
     private LocalTime searchTime;
 
-    @Column(name = "startDate")
+    @Column(name = "start_date")
     private String startDate;
 
-    @Column(name = "endDate")
+    @Column(name = "end_date")
     private String endDate;
 
     @Column(name = "description")
@@ -32,11 +32,12 @@ public class Search implements Comparable<Search> {
     @Column(name = "vendor")
     private String vendor;
 
-    @Column(name = "minAmount")
+    @Column(name = "min_amount")
     private String minAmount;
 
-    @Column(name = "maxAmount")
+    @Column(name = "max_amount")
     private String maxAmount;
+
     public Search(){
     }
 
