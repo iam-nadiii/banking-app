@@ -4,6 +4,7 @@ import com.banking.models.Search;
 import com.banking.repository.SearchRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SearchService {
 
@@ -17,6 +18,12 @@ public class SearchService {
         return searchRepository.findAll();
     }
 
-    public List<Search> /*Make one to get singular and another to delete*/
+    public Optional<Search> findById(Long Id) {
+        return searchRepository.findById(Id);
+    }
 
+
+    public void deleteSearch(Long Id) {
+        searchRepository.deleteById(Id);
+    }
 }

@@ -14,7 +14,7 @@ public class Search implements Comparable<Search> {
 
     @Id
     @Column(name = "id")
-    private int Id;/*Is ID not required? I see it on the schema. I added in case we do, just include getter+setters*/
+    private Long Id;/*Is ID not required? I see it on the schema. I added in case we do, just include getter+setters*/
 
     @Column(name = "searchDate")
     private LocalDate searchDate;

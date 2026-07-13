@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SearchRepository extends JpaRepository<Search, String>{
-    List<Search> findById(int Id); /*Will circle back on this, need to ask team what we will do*/
+public interface SearchRepository extends JpaRepository<Search, Long>{
+
+
+
 }
