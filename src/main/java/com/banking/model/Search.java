@@ -1,26 +1,60 @@
 package com.banking.model;
 
 
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.*;
 
+@Entity
+@Table(name = "searches")
 public class Search implements Comparable<Search> {
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;/*Is ID not required? I see it on the schema. I added in case we do, just include getter+setters*/
+
+    @Column(name = "search_date")
     private LocalDate searchDate;
+
+    @Column(name = "search_time")
     private LocalTime searchTime;
 
-    private String startDate;
-    private String endDate;
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "vendor_query")
     private String vendor;
-    private String minAmount;
-    private String maxAmount;
 
+    @Column(name = "min_amount")
+    private BigDecimal minAmount;
 
-    public String getEndDate() {
+    @Column(name = "max_amount")
+    private BigDecimal maxAmount;
+
+    public Search(){
+    }
+
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
+    }
+
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
@@ -40,11 +74,11 @@ public class Search implements Comparable<Search> {
         this.searchTime = searchTime;
     }
 
-    public String getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
@@ -64,19 +98,19 @@ public class Search implements Comparable<Search> {
         this.vendor = vendor;
     }
 
-    public String getMinAmount() {
+    public BigDecimal getMinAmount() {
         return minAmount;
     }
 
-    public void setMinAmount(String minAmount) {
+    public void setMinAmount(BigDecimal minAmount) {
         this.minAmount = minAmount;
     }
 
-    public String getMaxAmount() {
+    public BigDecimal getMaxAmount() {
         return maxAmount;
     }
 
-    public void setMaxAmount(String maxAmount) {
+    public void setMaxAmount(BigDecimal maxAmount) {
         this.maxAmount = maxAmount;
     }
 
@@ -85,12 +119,12 @@ public class Search implements Comparable<Search> {
         return "Search{" +
                 "searchDate=" + searchDate +
                 ", searchTime=" + searchTime +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
                 ", description='" + description + '\'' +
                 ", vendor='" + vendor + '\'' +
-                ", minAmount='" + minAmount + '\'' +
-                ", maxAmount='" + maxAmount + '\'' +
+                ", minAmount=" + minAmount +
+                ", maxAmount=" + maxAmount +
                 '}';
     }
 
@@ -98,14 +132,12 @@ public class Search implements Comparable<Search> {
     public int compareTo(Search other) {
         int dateCompare = other.searchDate.compareTo(this.searchDate);
 
-        if (dateCompare != 0){
+        if (dateCompare != 0) {
             return dateCompare;
         }
 
         return other.searchTime.compareTo(this.searchTime);
     }
-
-
 
 
 }
