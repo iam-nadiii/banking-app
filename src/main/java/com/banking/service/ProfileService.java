@@ -21,11 +21,18 @@ public class ProfileService
     {
         this.profileRepository = profileRepository;
     }
-    public Profile getByUserId(int userId){
-        if (userId <= 0) {
+
+    public Profile getByUserId(Long userId) {
+        if (userId == null || userId <= 0) {
             throw new InvalidInputException("User ID must be a positive number");
         }
-        return profileRepository.findByUserId(userId);
+        Profile profile = profileRepository.findByUserId(userId);
+
+        if (profile == null) {
+            throw new ResourceNotFoundException("Profile not found for user id: " + userId);
+        }
+
+        return profile;
     }
 
     public Profile create(Profile profile)
@@ -43,7 +50,7 @@ public class ProfileService
         }
     }
 
-    public Profile update(int userId, Profile profile) {
+    public Profile update(Long userId, Profile profile) {
 
 
         if (profile == null) {

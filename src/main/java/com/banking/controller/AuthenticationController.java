@@ -79,7 +79,7 @@ public class AuthenticationController {
         }
 
         // create user
-        User user = userService.create(new User(0, newUser.getUsername(), newUser.getPassword(), newUser.getRole()));
+        User user = userService.create(new User(0L, newUser.getUsername(), newUser.getPassword(), newUser.getRole()));
 
         // create profile
         Profile profile = new Profile();

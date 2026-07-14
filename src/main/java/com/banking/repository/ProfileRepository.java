@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import com.banking.model.Profile;
 
 @Repository
-public interface ProfileRepository extends JpaRepository<Profile, Integer>
+public interface ProfileRepository extends JpaRepository<Profile, Long>
 {
-    Profile findByUserId(int userId);
+    Profile findByUserId(Long userId);
 }
