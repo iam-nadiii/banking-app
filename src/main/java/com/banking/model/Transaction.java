@@ -18,13 +18,15 @@ public class Transaction {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+
+    @ManyToOne
     @JoinColumn(name = "vendor_id")
     private Vendor vendor;
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;
-
-
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -93,6 +95,15 @@ public class Transaction {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 
 }
 

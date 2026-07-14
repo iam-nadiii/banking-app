@@ -38,7 +38,7 @@ public class UserService
         return userRepository.findByUsername(username);
     }
 
-    public int getIdByUsername(String username)
+    public Long getIdByUsername(String username)
     {
         User user = userRepository.findByUsername(username);
         return Math.toIntExact(user != null ? user.getId() : -1);
