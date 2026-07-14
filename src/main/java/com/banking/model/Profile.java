@@ -42,6 +42,8 @@ public class Profile
     @Column(name = "country")
     private String country;
 
+
+
     public Profile(Long userId, String firstName, String lastName, String phone, LocalDate dateOfBirth,
                    String addressLine1, String addressLine2, String city, String state,
                    String postalCode, String country) {

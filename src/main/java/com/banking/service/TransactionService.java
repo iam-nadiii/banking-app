@@ -51,7 +51,9 @@ public List<Transaction> getByType(TransactionType type) {
 
 @Transactional
 public Transaction create(Transaction transaction) {
-
+    if (transaction.getUser().getId() == null) {
+        throw new InvalidInputException("User ID cannot be empty");
+    }
     if (transaction.getAmount() == null) {
         throw new InvalidInputException("Transaction amount cannot be empty");
     }
@@ -77,52 +79,70 @@ public void delete(Long id)
     transactionRepository.deleteById(id);
 }
 
-public Transaction update(Long id, Transaction transaction)
-{
-    // update transaction and return the updated transaction
-    if (transaction.getAmount() == null) {
+    public Transaction update(Long id, Transaction transaction) {
+        // 1. Input Validation (including the new userId)
+        if (transaction.getAmount() == null) {
+            throw new InvalidInputException("Transaction amount cannot be empty");
+        }
+        if (transaction.getType() == null) {
+            throw new InvalidInputException("Transaction type cannot be empty");
+        }
+        if (transaction.getTxnDate() == null) {
+            throw new InvalidInputException("Transaction date cannot be empty");
+        }
+        if (transaction.getUser().getId() == null || transaction.getUser().getId() <= 0) {
+            throw new InvalidInputException("User ID must be a positive number");
+        }
 
-        throw new InvalidInputException("Transaction amount cannot be empty");
+        // 2. Multi-tenant Duplicate Check (Prevents user A from triggering a duplicate error against user B)
+        boolean possibleDuplicate = transactionRepository.existsByUserIdAndVendorAndAmountAndTxnDateAndTxnTime(
+                transaction.getUser().getId(),
+                transaction.getVendor(),
+                transaction.getAmount(),
+                transaction.getTxnDate(),
+                transaction.getTxnTime()
+        );
+        if (possibleDuplicate) {
+            throw new DuplicateResourceException("An identical transaction already exists for this vendor, amount, and time");
+        }
 
+        // 3. Retrieve and verify ownership of the existing transaction
+        // Using your newly created method ensures the user actually owns this transaction before changing it
+        Transaction existing = getByIdAndUserId(id, transaction.getUser().getId());
+
+        // 4. Map updated fields
+        existing.setAmount(transaction.getAmount());
+        existing.setType(transaction.getType());
+        existing.setTxnDate(transaction.getTxnDate());
+        existing.setTxnTime(transaction.getTxnTime());
+        existing.setDescription(transaction.getDescription());
+        existing.setVendor(transaction.getVendor());
+        // Note: existing.setUserId(...) isn't strictly needed here since getByIdAndUserId already proved they match
+
+        // 5. Save to database
+        try {
+            return transactionRepository.save(existing);
+        } catch (Exception e) {
+            throw new DatabaseOperationException("Failed to update transaction", e);
+        }
     }
 
-    if (transaction.getType() == null) {
-
-        throw new InvalidInputException("Transaction type cannot be empty");
-
+    public List<Transaction> getByUserId(Long userId) {
+        if (userId == null || userId <= 0) {
+            throw new InvalidInputException("User ID must be a positive number");
+        }
+        return transactionRepository.findByUserId(userId);
     }
 
-    if (transaction.getTxnDate() == null) {
-
-        throw new InvalidInputException("Transaction date cannot be empty");
-
-    }
-    boolean possibleDuplicate = transactionRepository.existsByVendorAndAmountAndTxnDateAndTxnTime(
-            transaction.getVendor(), transaction.getAmount(), transaction.getTxnDate(), transaction.getTxnTime());
-
-    if (possibleDuplicate) {
-        throw new DuplicateResourceException("An identical transaction already exists for this vendor, amount, and time");
-    }
-    Transaction existing = getById(id);
-
-    existing.setAmount(transaction.getAmount());
-    existing.setType(transaction.getType());
-    existing.setTxnDate(transaction.getTxnDate());
-    existing.setTxnTime(transaction.getTxnTime());
-    existing.setDescription(transaction.getDescription());
-    existing.setVendor(transaction.getVendor());
-
-    try {
-
-        return transactionRepository.save(existing);
-
-    } catch (Exception e) {
-
-        throw new DatabaseOperationException("Failed to update transaction", e);
-
+    // Optional: Get a specific transaction only if it belongs to the user (multi-tenant security)
+    public Transaction getByIdAndUserId(Long id, Long userId) {
+        if (id <= 0 || userId == null) {
+            throw new InvalidInputException("Invalid transaction ID or User ID");
+        }
+        return transactionRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction with id: "+id+"not found for user ID: " + userId));
     }
 
-}
 
 public List<Transaction> getByDateRange(LocalDate start, LocalDate end) {
     if (start == null || end == null) {
@@ -141,9 +161,9 @@ public List<Transaction> getByVendorId(Long vendorId) {
     return transactionRepository.findByVendor_Id(vendorId);
 }
 
-public List<Transaction> search(Long vendorId, TransactionType type, LocalDate startDate, LocalDate endDate) {
+public List<Transaction> search(Long userId,Long vendorId, TransactionType type, LocalDate startDate, LocalDate endDate) {
     try{
-    return transactionRepository.search(vendorId, type, startDate, endDate);
+    return transactionRepository.search(userId,vendorId, type, startDate, endDate);
     }catch(Exception e){
         throw new DatabaseOperationException("Failed to search transactions");
     }

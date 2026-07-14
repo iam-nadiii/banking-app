@@ -21,6 +21,20 @@ public TransactionController(TransactionService transactionService){
     this.transactionService=transactionService;
 }
 
+//Fetch transactions belonging strictly to ONE user
+@GetMapping("/user/{userId}")
+public ResponseEntity<List<Transaction>> getByUserId(@PathVariable Long userId) {
+    List<Transaction> transactions = transactionService.getByUserId(userId);
+    return ResponseEntity.ok(transactions);
+}
+
+//Secured: Only gets the transaction if it belongs to this specific user context
+@GetMapping("/{id}/user/{userId}")
+public ResponseEntity<Transaction> getByIdAndUserId(@PathVariable Long id, @PathVariable Long userId){
+    Transaction transaction = transactionService.getByIdAndUserId(id, userId);
+    return ResponseEntity.ok(transaction);
+}
+
 @GetMapping
     public ResponseEntity<List<Transaction>>getAll(){
     List<Transaction>transactions=transactionService.getAllTransactions();
@@ -58,12 +72,13 @@ public ResponseEntity<List<Transaction>> getByType(@PathVariable TransactionType
 
 @GetMapping("/search")
 public ResponseEntity<List<Transaction>> search(
+        @RequestParam(required = false) Long userId,
         @RequestParam(required = false) Long vendorId,
         @RequestParam(required = false) TransactionType type,
         @RequestParam(required = false) LocalDate startDate,
         @RequestParam(required = false) LocalDate endDate) {
 
-    List<Transaction> transactions = transactionService.search(vendorId, type, startDate, endDate);
+    List<Transaction> transactions = transactionService.search(userId, vendorId, type, startDate, endDate);
     return ResponseEntity.ok(transactions);
 }
 
