@@ -1,16 +1,14 @@
 package com.banking.repository;
 
-import com.banking.models.Search;
+import com.banking.model.Search;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
-public interface SearchRepository extends JpaRepository<Search, Long>{
+public interface SearchRepository extends JpaRepository<Search, Long> {
 
-    Search getBySearchId(Long Id);
-
-    Optional<Search> findByVendor(String vendor);
+    List<Search> findByVendor(String vendor);
 
 }

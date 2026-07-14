@@ -1,4 +1,4 @@
-package com.banking.models;
+package com.banking.model;
 
 
 import jakarta.persistence.*;

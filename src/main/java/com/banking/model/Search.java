@@ -1,8 +1,9 @@
-package com.banking.models;
+package com.banking.model;
 
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.*;
 
 @Entity
@@ -21,22 +22,22 @@ public class Search implements Comparable<Search> {
     private LocalTime searchTime;
 
     @Column(name = "start_date")
-    private String startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date")
-    private String endDate;
+    private LocalDate endDate;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "vendor")
+    @Column(name = "vendor_query")
     private String vendor;
 
     @Column(name = "min_amount")
-    private String minAmount;
+    private BigDecimal minAmount;
 
     @Column(name = "max_amount")
-    private String maxAmount;
+    private BigDecimal maxAmount;
 
     public Search(){
     }
@@ -49,11 +50,11 @@ public class Search implements Comparable<Search> {
         Id = id;
     }
 
-    public String getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
@@ -73,11 +74,11 @@ public class Search implements Comparable<Search> {
         this.searchTime = searchTime;
     }
 
-    public String getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
@@ -97,19 +98,19 @@ public class Search implements Comparable<Search> {
         this.vendor = vendor;
     }
 
-    public String getMinAmount() {
+    public BigDecimal getMinAmount() {
         return minAmount;
     }
 
-    public void setMinAmount(String minAmount) {
+    public void setMinAmount(BigDecimal minAmount) {
         this.minAmount = minAmount;
     }
 
-    public String getMaxAmount() {
+    public BigDecimal getMaxAmount() {
         return maxAmount;
     }
 
-    public void setMaxAmount(String maxAmount) {
+    public void setMaxAmount(BigDecimal maxAmount) {
         this.maxAmount = maxAmount;
     }
 
@@ -118,12 +119,12 @@ public class Search implements Comparable<Search> {
         return "Search{" +
                 "searchDate=" + searchDate +
                 ", searchTime=" + searchTime +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
                 ", description='" + description + '\'' +
                 ", vendor='" + vendor + '\'' +
-                ", minAmount='" + minAmount + '\'' +
-                ", maxAmount='" + maxAmount + '\'' +
+                ", minAmount=" + minAmount +
+                ", maxAmount=" + maxAmount +
                 '}';
     }
 

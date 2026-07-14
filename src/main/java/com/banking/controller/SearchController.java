@@ -1,22 +1,19 @@
-package com.banking.controllers;
+package com.banking.controller;
 
-import com.banking.models.Search;
+import com.banking.model.Search;
 import com.banking.service.SearchService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
-@RequestMapping("searches")
+@RequestMapping("/searches")
 public class SearchController {
 
     private final SearchService searchService;
-    private ResponseEntity<Search> ResponseEntity;
 
     public SearchController(SearchService searchService) {
         this.searchService = searchService;
@@ -29,22 +26,15 @@ public class SearchController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Search> getBySearchId(@PathVariable Long Id) {
-
-        Optional<Search> search = searchService.getBySearchId(Id);
-
-        if (search == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
-        return ResponseEntity;
+    public ResponseEntity<Search> getBySearchId(@PathVariable("id") Long id) {
+        Search search = searchService.getBySearchId(id);
+        return ResponseEntity.ok(search);
     }
 
-    @GetMapping("/{vendor}")
-    public ResponseEntity<Search> findByVendor(@PathVariable String vendor) {
-        Optional<Search> search = searchService.findByVendor(vendor);
-        if (search == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return ResponseEntity;
+    @GetMapping("/vendor/{vendor}")
+    public ResponseEntity<List<Search>> findByVendor(@PathVariable("vendor") String vendor) {
+        List<Search> searches = searchService.findByVendor(vendor);
+        return ResponseEntity.ok(searches);
     }
 
     @PostMapping
@@ -54,8 +44,8 @@ public class SearchController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSearch(@PathVariable Long Id) {
-        searchService.deleteSearch(Id);
+    public ResponseEntity<Void> deleteSearch(@PathVariable("id") Long id) {
+        searchService.deleteSearch(id);
         return ResponseEntity.noContent().build();
     }
 }
