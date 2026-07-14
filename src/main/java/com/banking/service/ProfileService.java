@@ -1,0 +1,81 @@
+package com.banking.service;
+
+
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.banking.exception.DatabaseOperationException;
+import com.banking.exception.InvalidInputException;
+import com.banking.exception.ResourceNotFoundException;
+import com.banking.model.Profile;
+import com.banking.repository.ProfileRepository;
+
+import java.util.List;
+
+@Service
+public class ProfileService
+{
+    private final ProfileRepository profileRepository;
+
+    public ProfileService(ProfileRepository profileRepository)
+    {
+        this.profileRepository = profileRepository;
+    }
+    public Profile getByUserId(int userId){
+        if (userId <= 0) {
+            throw new InvalidInputException("User ID must be a positive number");
+        }
+        return profileRepository.findByUserId(userId);
+    }
+
+    public Profile create(Profile profile)
+    {
+        if (profile == null) {
+            throw new InvalidInputException("Profile data cannot be null");
+        }
+
+        try {
+            //Persist safely
+            return profileRepository.save(profile);
+        } catch (Exception e) {
+            //Translate raw SQL exceptions into your custom exceptions
+            throw new DatabaseOperationException("Failed to create user profile", e);
+        }
+    }
+
+    public Profile update(int userId, Profile profile) {
+
+
+        if (profile == null) {
+
+            throw new InvalidInputException("Profile data cannot be null");
+
+        }
+
+        try {
+
+            // 🌟 THE FIX: Explicitly bind the authenticated userId to the profile entity.
+
+            // This forces JPA to perform an UPDATE on this specific user's row instead of an INSERT.
+
+            profile.setUserId(userId);
+
+
+
+            // Persist safely
+
+            return profileRepository.save(profile);
+
+        } catch (Exception e) {
+
+            // Translate raw SQL exceptions into your custom exceptions
+
+            throw new DatabaseOperationException("Failed to update user profile", e);
+
+        }
+
+    }
+
+}
+
+
