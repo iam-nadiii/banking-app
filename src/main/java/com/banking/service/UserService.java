@@ -24,7 +24,11 @@ public class UserService
         return userRepository.findAll();
     }
 
-    public User getUserById(int userId)
+    // FIX: was `int userId` — UserRepository is JpaRepository<User, Long>,
+    // matching User's real @Id type. This would have failed at Spring
+    // context startup (repository proxy generation checks the ID type
+    // against the entity's actual @Id, not just what compiles).
+    public User getUserById(Long userId)
     {
         return userRepository.findById(userId).orElse(null);
     }
@@ -37,7 +41,7 @@ public class UserService
     public int getIdByUsername(String username)
     {
         User user = userRepository.findByUsername(username);
-        return user != null ? user.getId() :  -1;
+        return Math.toIntExact(user != null ? user.getId() : -1);
     }
 
     public boolean exists(String username)
@@ -52,4 +56,3 @@ public class UserService
         return userRepository.save(user);
     }
 }
-

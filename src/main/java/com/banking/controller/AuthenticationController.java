@@ -78,8 +78,19 @@ public class AuthenticationController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Already Exists.");
         }
 
-        // create user
-        User user = userService.create(new User(0L, newUser.getUsername(), newUser.getPassword(), newUser.getRole()));
+        // FIX: confirmPassword existed on the DTO but was never actually
+        // checked against password — added here.
+        if (!newUser.getPassword().equals(newUser.getConfirmPassword()))
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match.");
+        }
+
+        // FIX: role is no longer read from the client at all (removed from
+        // RegisterUserDto). Every self-registration is USER — promoting to
+        // ADMIN is a manual DB step, same as the rest of this project.
+        User user = new User(null, newUser.getUsername(), newUser.getPassword(), "USER");
+        user.setEmail(newUser.getEmail());
+        user = userService.create(user);
 
         // create profile
         Profile profile = new Profile();
@@ -90,4 +101,3 @@ public class AuthenticationController {
     }
 
 }
-

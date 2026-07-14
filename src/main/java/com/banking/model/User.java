@@ -12,17 +12,25 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
 
+    // FIX: was @Column(name = "user_id") — the real column is just `id`.
+    // This was the original crash ("missing column [user_id] in table [users]").
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Long id;
 
     @Column(name = "username")
     private String username;
 
+    // FIX: was @Column(name = "hashed_password") — real column is
+    // `password_hash`.
     @JsonIgnore
-    @Column(name = "hashed_password")
+    @Column(name = "password_hash")
     private String password;
+
+    // FIX: was missing entirely — `email` is NOT NULL UNIQUE in the real
+    // schema, so registration would fail on every insert without this.
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "role")
     private String role;
@@ -55,7 +63,7 @@ public class User {
         this.id = id;
         this.username = username;
         this.password = password;
-        if(authorities != null) this.setAuthorities(authorities);
+        if (authorities != null) this.setAuthorities(authorities);
         this.activated = true;
     }
 
@@ -83,6 +91,14 @@ public class User {
         this.password = password;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public boolean isActivated() {
         return activated;
     }
@@ -102,13 +118,12 @@ public class User {
     public void setAuthorities(String authorities) {
         this.role = authorities;
         String[] roles = authorities.split(",");
-        for(String r : roles) {
+        for (String r : roles) {
             addRole(r);
         }
     }
 
-    public void addRole(String role)
-    {
+    public void addRole(String role) {
         String authority = role.trim().contains("ROLE_") ? role.trim() : "ROLE_" + role.trim();
         this.authorities.add(new Authority(authority));
     }
@@ -118,7 +133,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id &&
+        return Objects.equals(id, user.id) &&
                 activated == user.activated &&
                 Objects.equals(username, user.username) &&
                 Objects.equals(password, user.password) &&
@@ -141,17 +156,12 @@ public class User {
     }
 
     @JsonIgnore
-    public String getRole()
-    {
-        if(!authorities.isEmpty())
-        {
-            for(Authority r: authorities)
-            {
+    public String getRole() {
+        if (!authorities.isEmpty()) {
+            for (Authority r : authorities) {
                 return r.getName().toUpperCase();
             }
         }
-
         return "ROLE_USER";
     }
 }
-
