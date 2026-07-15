@@ -41,7 +41,7 @@ public class UserService
     public Long getIdByUsername(String username)
     {
         User user = userRepository.findByUsername(username);
-        return Math.toIntExact(user != null ? user.getId() : -1);
+        return (long) Math.toIntExact(user != null ? user.getId() : -1);
     }
 
     public boolean exists(String username)

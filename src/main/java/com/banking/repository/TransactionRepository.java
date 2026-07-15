@@ -19,12 +19,17 @@ public interface TransactionRepository extends JpaRepository<Transaction,Long> {
     List<Transaction> findByVendor_Id(Long vendorId);
     boolean existsByUserIdAndVendorAndAmountAndTxnDateAndTxnTime(
             Long userId,
-            Vendor vendor,// Change to vendorId for Testing
-            BigDecimal amount, // Change to BigDecimal or Long if your model uses that instead
+            Vendor vendor,
+            BigDecimal amount,
             LocalDate txnDate,
             LocalTime txnTime
     );
-    @Query("SELECT t FROM Transaction t WHERE t.user.id = :userId" +
+    // FIX: userId now has the same "(:param IS NULL OR ...)" null-guard as
+    // the other four filters. Previously it was a hard `t.user.id = :userId`
+    // with no guard — passing null (which the controller now legitimately
+    // does for an admin wanting to search across every user) matched zero
+    // rows instead of "no filter."
+    @Query("SELECT t FROM Transaction t WHERE (:userId IS NULL OR t.user.id = :userId)" +
             " AND (:vendorId IS NULL OR t.vendor.id = :vendorId) AND " +
             "(:type IS NULL OR t.type = :type) AND (:startDate IS NULL OR t.txnDate >= :startDate)" +
             " AND (:endDate IS NULL OR t.txnDate <= :endDate)")
