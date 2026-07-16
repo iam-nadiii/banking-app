@@ -296,10 +296,13 @@ Potential future enhancements include:
 ### Home Screen
 
 *(Insert application screenshot here)*
+<img width="883" height="787" alt="image" src="https://github.com/user-attachments/assets/22a123d7-e6f2-4c91-8d77-d34a4292ba7d" />
+
 
 ### Database Schema
 
 *(Insert MySQL screenshots here)*
+
 
 ### API Testing
 
