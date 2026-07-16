@@ -29,11 +29,38 @@ public class SearchService {
                 .orElseThrow(() -> new ResourceNotFoundException("Search not found with this id: " + id));
     }
 
+    // Added for scoping — mirrors TransactionService.getByUserId /
+    // getByIdAndUserId exactly.
+    public List<Search> getByUserId(Long userId) {
+        if (userId == null || userId <= 0) {
+            throw new InvalidInputException("User ID must be a positive number");
+        }
+        return searchRepository.findByUserId(userId);
+    }
+
+    public Search getByIdAndUserId(Long id, Long userId) {
+        if (id == null || id <= 0 || userId == null) {
+            throw new InvalidInputException("Invalid search ID or user ID");
+        }
+        return searchRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Search with id: " + id + " not found for user ID: " + userId));
+    }
+
     public List<Search> findByVendor(String vendor) {
         if (vendor == null || vendor.isBlank()) {
             throw new InvalidInputException("Vendor cannot be empty");
         }
         return searchRepository.findByVendor(vendor);
+    }
+
+    public List<Search> findByVendorAndUserId(String vendor, Long userId) {
+        if (vendor == null || vendor.isBlank()) {
+            throw new InvalidInputException("Vendor cannot be empty");
+        }
+        if (userId == null || userId <= 0) {
+            throw new InvalidInputException("User ID must be a positive number");
+        }
+        return searchRepository.findByVendorAndUserId(vendor, userId);
     }
 
     public Search create(Search search) {
@@ -45,11 +72,15 @@ public class SearchService {
             throw new InvalidInputException("Search date cannot be empty");
         }
 
-        // TODO: `searches.user_id` is NOT NULL in the database, but Search.java has
-        // no userId field and nothing here sets one. Until the team decides how user
-        // association works (auth system? request param?), calls to this method will
-        // fail at the database level with a constraint violation, not a clean
-        // InvalidInputException. Resolve before this goes live.
+        // FIX: the old TODO here is resolved — SearchController now calls
+        // search.setUser(currentUser()) before this runs, same as
+        // TransactionController does for transactions. This check confirms
+        // that actually happened, rather than silently saving an
+        // unattributed search that (now that user_id is nullable) would
+        // insert fine but never show up for anyone, including its creator.
+        if (search.getUser() == null || search.getUser().getId() == null) {
+            throw new InvalidInputException("Search must be associated with a user");
+        }
 
         return searchRepository.save(search);
     }

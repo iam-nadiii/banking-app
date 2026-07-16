@@ -3,6 +3,15 @@
 -- Host: localhost    Database: finance_db
 -- ------------------------------------------------------
 -- Server version	8.0.46-0ubuntu0.24.04.3
+--
+-- CORRECTED VERSION — reflects every schema/data change made across the
+-- auth + role-based-access work: `role` column added to `users` (with
+-- real bcrypt password hashes, not the original placeholders),
+-- `searches.user_id` made nullable, and the stray misplaced
+-- `UPDATE users SET role = 'ADMIN' ...` statement removed — it's no
+-- longer needed since nadia's role is now set directly in the seed
+-- INSERT below, and it was previously placed before the database even
+-- existed, so it would have failed if actually run.
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -19,8 +28,6 @@
 -- Current Database: `finance_db`
 --
 
--- ALTER TABLE searches MODIFY user_id BIGINT NULL;
-
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `finance_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE `finance_db`;
@@ -28,13 +35,18 @@ USE `finance_db`;
 --
 -- Table structure for table `searches`
 --
+-- FIX: `user_id` changed from NOT NULL to NULL. This was the actual bug
+-- that blocked saved searches from working at all until it was fixed —
+-- nothing in the app ever set this column, so every insert failed
+-- against the original NOT NULL constraint.
+--
 
 DROP TABLE IF EXISTS `searches`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `searches` (
                             `id` bigint NOT NULL AUTO_INCREMENT,
-                            `user_id` bigint NOT NULL,
+                            `user_id` bigint DEFAULT NULL,
                             `search_date` date NOT NULL,
                             `search_time` time DEFAULT NULL,
                             `start_date` date DEFAULT NULL,
@@ -62,6 +74,11 @@ UNLOCK TABLES;
 
 --
 -- Table structure for table `transactions`
+--
+-- Unchanged this session — already had `user_id NOT NULL` from the
+-- start; the bug there was in the Java entity/controller layer
+-- (Transaction.java had no `user` field mapped, and several endpoints
+-- trusted a client-supplied userId), not in this schema.
 --
 
 DROP TABLE IF EXISTS `transactions`;
@@ -99,6 +116,8 @@ UNLOCK TABLES;
 --
 -- Table structure for table `user_profiles`
 --
+-- Unchanged this session.
+--
 
 DROP TABLE IF EXISTS `user_profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -133,6 +152,15 @@ UNLOCK TABLES;
 --
 -- Table structure for table `users`
 --
+-- FIX: added `role` column, NOT NULL DEFAULT 'USER'. Deliberately NO
+-- CHECK constraint restricting it to 'USER'/'ADMIN' only — User.java's
+-- @PostLoad splits this column on commas to build a Set<Authority>, so a
+-- value like 'USER,ADMIN' is a legitimate multi-role value under the
+-- actual application design, and a strict CHECK would incorrectly reject
+-- it. Enforcement that a *new* row always starts as 'USER' happens in
+-- application code (UserService.create()), not the database — see the
+-- registration-role-vulnerability discussion earlier in this project.
+--
 
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -142,6 +170,7 @@ CREATE TABLE `users` (
                          `username` varchar(50) NOT NULL,
                          `email` varchar(255) NOT NULL,
                          `password_hash` varchar(255) NOT NULL,
+                         `role` varchar(20) NOT NULL DEFAULT 'USER',
                          `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                          `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                          PRIMARY KEY (`id`),
@@ -153,15 +182,29 @@ CREATE TABLE `users` (
 --
 -- Dumping data for table `users`
 --
+-- FIX: real bcrypt hashes, not the original placeholder strings (those
+-- were never valid hashes of any real password — nobody could have
+-- logged in as these users before). Passwords for reference, since
+-- bcrypt hashes can't be reversed: nadia = Nadia2026!, jolie = Jolie2026!,
+-- demo = Demo2026! — all meant as temporary, to be changed once a real
+-- change-password flow exists. nadia's role is ADMIN; jolie and demo are
+-- the DEFAULT 'USER'.
+--
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'nadia','nadia@example.com','$2a$10$placeholderHashForNadia00000000000000','2026-07-13 19:14:55','2026-07-13 19:14:55'),(2,'jolie','jolie@example.com','$2a$10$placeholderHashForJolie00000000000000','2026-07-13 19:14:55','2026-07-13 19:14:55'),(3,'demo','demo@example.com','$2a$10$placeholderHashForDemo000000000000000','2026-07-13 19:14:55','2026-07-13 19:14:55');
+INSERT INTO `users` (`id`,`username`,`email`,`password_hash`,`role`,`created_at`,`updated_at`) VALUES
+                                                                                                   (1,'nadia','nadia@example.com','$2b$10$AhXKVlFlKSFciJ42aqoqzexZhGBWN1OMSeYVVTWhLu3asI4K/vvy.','ADMIN','2026-07-13 19:14:55','2026-07-13 19:14:55'),
+                                                                                                   (2,'jolie','jolie@example.com','$2b$10$VqphNzI/W4JWogP/.pdslOlRLZC5hPnbXxsGHjICLyc9zUHr2znOq','USER','2026-07-13 19:14:55','2026-07-13 19:14:55'),
+                                                                                                   (3,'demo','demo@example.com','$2b$10$fOemHdcpzofzBMfg/FSGKOvmwAwhiOkkSbI3zNUudVnOebrCH8Q0C','USER','2026-07-13 19:14:55','2026-07-13 19:14:55');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
 -- Table structure for table `vendors`
+--
+-- Unchanged this session — no schema change; VendorController/Service
+-- read/write name and category which were already here.
 --
 
 DROP TABLE IF EXISTS `vendors`;
@@ -199,4 +242,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-07-13 19:15:04
+-- Corrected dump reflecting the state as of this session's work.
