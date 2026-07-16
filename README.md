@@ -302,6 +302,9 @@ Potential future enhancements include:
 ### Database Schema
 
 *(Insert MySQL screenshots here)*
+<img width="832" height="714" alt="finance_db_ERD" src="https://github.com/user-attachments/assets/c4f477f4-3d88-42e8-be12-66ec80ba07e5" />
+
+
 
 
 ### API Testing
