@@ -13,7 +13,7 @@ import java.util.List;
 public interface TransactionRepository extends JpaRepository<Transaction,Long> {
     List<Transaction> findByType(TransactionType type);
     List<Transaction> findByTxnDateBetween(LocalDate start, LocalDate end);
-    List<Transaction> findByVendorId(Long vendorId);
+    List<Transaction> findByVendor_Id(Long vendorId);
 
-    boolean existsByVendorIdAndAmountAndTxnDateAndTxnTime(Long vendorId, BigDecimal amount, LocalDate txnDate, LocalTime txnTime);
+    boolean existsByVendorAndAmountAndTxnDateAndTxnTime(Vendor vendor, BigDecimal amount, LocalDate txnDate, LocalTime txnTime);
 }

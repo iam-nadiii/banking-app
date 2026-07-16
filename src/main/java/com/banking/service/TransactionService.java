@@ -97,8 +97,8 @@ public Transaction update(Long id, Transaction transaction)
         throw new InvalidInputException("Transaction date cannot be empty");
 
     }
-    boolean possibleDuplicate = transactionRepository.existsByVendorIdAndAmountAndTxnDateAndTxnTime(
-            transaction.getVendorId(), transaction.getAmount(), transaction.getTxnDate(), transaction.getTxnTime());
+    boolean possibleDuplicate = transactionRepository.existsByVendorAndAmountAndTxnDateAndTxnTime(
+            transaction.getVendor(), transaction.getAmount(), transaction.getTxnDate(), transaction.getTxnTime());
 
     if (possibleDuplicate) {
         throw new DuplicateResourceException("An identical transaction already exists for this vendor, amount, and time");
@@ -110,7 +110,7 @@ public Transaction update(Long id, Transaction transaction)
     existing.setTxnDate(transaction.getTxnDate());
     existing.setTxnTime(transaction.getTxnTime());
     existing.setDescription(transaction.getDescription());
-    existing.setVendorId(transaction.getVendorId());
+    existing.setVendor(transaction.getVendor());
 
     try {
 
@@ -138,7 +138,7 @@ public List<Transaction> getByVendorId(Long vendorId) {
     if (vendorId == null) {
         throw new InvalidInputException("Vendor id cannot be null");
     }
-    return transactionRepository.findByVendorId(vendorId);
+    return transactionRepository.findByVendor_Id(vendorId);
 }
 
 }
