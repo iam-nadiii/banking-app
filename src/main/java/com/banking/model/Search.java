@@ -15,6 +15,13 @@ public class Search implements Comparable<Search> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;/*Is ID not required? I see it on the schema. I added in case we do, just include getter+setters*/
 
+    // FIX: this was missing entirely — the actual root cause of every
+    // saved search being visible (and deletable) by every user. Nothing
+    // ever set who a search belonged to.
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Column(name = "search_date")
     private LocalDate searchDate;
 
@@ -48,6 +55,14 @@ public class Search implements Comparable<Search> {
 
     public void setId(Long id) {
         Id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDate getEndDate() {
